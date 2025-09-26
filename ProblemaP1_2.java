@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
  * 
  */
 
-public class ProblemaP1 
+public class ProblemaP1_2 
 {
     public static void main(String[] args) throws Exception
     {
@@ -58,47 +58,45 @@ public class ProblemaP1
      */
     public int creatividadMaxima(int k, int e, int[] pc)
     {
-        int ct = 0;
-        int[][] c = new int[k+1][e+1];
-
+        int ct;
         //Código generado a partir de la ecuación de recurrencia
-        int n = 0;
-        int p = 0;
+
+        int[] puntaje = new int[e + 1];//guarda los puntajes de creatividad para cada cantidad de energia
+
+        for (int x = 0; x <= e; x++) {
+            puntaje[x] = puntosCreatividad(x, pc);
+        }
+
         int[][] subProblems = new int[k+1][e+1];
         final int NEG_INF = -1000000;
+
+        // Casos base: 0 celdas
+        subProblems[0][0] = 0;// E=0, puntaje 0
+
+        for (int x = 1; x <= e; x++) { // En el grafo de necesidades llena la primera fila (menos el 0,0)
+            subProblems[0][x] = NEG_INF; // si se quiere repartir energia en 0 celdas: imposible
+        }
+
+        int n = 0;
+        int p = 0;
         while(n<=k)
         {
-            if(n==0)
-            {
-                c[n][p] = NEG_INF;
-                subProblems[n][p] = NEG_INF;
+            if(n==1) {
+                subProblems[n][p] = puntaje[p];
             }
-            else if(n==1)
-            {
-                c[n][p] = puntosCreatividad(p, pc);
-                subProblems[n][p] = c[n][p];
-            }
-            else if(n==2)
-            {
-                int op2 = c[1][p] + c[1][e-p];
-                c[n][p] = Math.max(c[n-1][p],op2);
-            }
-            else
-            {
-                int subProblem = -1;
-                if (subProblems[n-1][e-p]!=0)
-                {
-                    subProblem = subProblems[n-1][e-p];
+            else {
+                int best = NEG_INF;
+                for (int x = 0; x <= p; x++) {
+                    int prev = subProblems[n - 1][p - x];
+                    if (prev == NEG_INF){
+                        continue;
+                    } // imposible
+                    int cand = prev + puntaje[x];
+                    if (cand > best) {
+                        best = cand;
+                    subProblems[n][p] = best;
+                    }
                 }
-                else
-                {
-                    subProblem = creatividadMaxima(n-1, e-p, pc);
-                    subProblems[n-1][e-p] = subProblem;
-                }
-
-                int opcion2 = subProblem + c[1][p];
-
-                c[n][p] = Math.max(c[n-1][p],opcion2);
             }
 
             if(p<e)
@@ -112,25 +110,7 @@ public class ProblemaP1
             }
         }
 
-        //Se obtiene el puntaje maximo alcanzable con las k celdas y e de energia, el cual corresponde
-        //con el valor máximo en la fila k de nuestra matriz c
-        int[] ptsK = c[k];
-        //Para el caso en el que se tiene una única celda se obtiene el puntaje de e
-        if(k==1)
-        {
-            ct = ptsK[e];
-        }
-        else
-        {
-            for(int pts:ptsK)
-            {
-                if(pts>=ct)
-                {
-                    ct = pts;
-                }
-            }
-        }
-        
+        ct = subProblems[k][e];
 
         return ct;
     }
