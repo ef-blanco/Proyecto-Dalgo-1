@@ -3,8 +3,8 @@ import java.io.InputStreamReader;
 /**
  * Programa que resuelve el problema planteado para el proyecto 1 de Dalgo
  * 
- * @author: Emmanuel Felipe Blanco Corredor
- * Código: 202312743
+ * @author: Emmanuel Felipe Blanco Corredor - 202312743
+ * @author: Laura Sofia Sarmiento – 202113056 
  * 
  */
 
