@@ -1,11 +1,18 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+/**
+ * Programa que resuelve el problema planteado para el proyecto 1 de Dalgo
+ * 
+ * @author: Emmanuel Felipe Blanco Corredor
+ * Código: 202312743
+ * 
+ */
 
-public class Problema1Og 
+public class ProblemaP1Og 
 {
     public static void main(String[] args) throws Exception
     {
-        ProblemaP1 instancia = new ProblemaP1();
+        ProblemaP1Og instancia = new ProblemaP1Og();
         try(InputStreamReader is = new InputStreamReader(System.in);
             BufferedReader br = new BufferedReader(is);)
             {
@@ -57,36 +64,40 @@ public class Problema1Og
         //Código generado a partir de la ecuación de recurrencia
         int n = 0;
         int p = 0;
+        int[][] subProblems = new int[k+1][e+1];
         while(n<=k)
         {
             if(n==0)
             {
                 c[n][p] = -1;
+                subProblems[n][p] =-1;
             }
             else if(n==1)
             {
                 c[n][p] = puntosCreatividad(p, pc);
+                subProblems[n][p] = c[n][p];
+            }
+            else if(n==2)
+            {
+                int op2 = c[1][p] + c[1][e-p];
+                c[n][p] = Math.max(c[n-1][p],op2);
             }
             else
             {
                 int subProblem = -1;
-                if (n!=2)
+                if (subProblems[n-1][e-p]!=0)
+                {
+                    subProblem = subProblems[n-1][e-p];
+                }
+                else
                 {
                     subProblem = creatividadMaxima(n-1, e-p, pc);
+                    subProblems[n-1][e-p] = subProblem;
                 }
 
-                if((c[n-1][p]>=(c[1][p]+c[n-1][e-p])) && (c[n-1][p]>=(subProblem+c[1][p])))
-                {
-                    c[n][p] = c[n-1][p];
-                }
-                else if((c[n-1][p]<=(c[1][p]+c[n-1][e-p]))&&((c[1][p]+c[n-1][e-p])>=(subProblem+c[1][p])))
-                {
-                    c[n][p] = (c[1][p]+c[n-1][e-p]);
-                }
-                else if(((subProblem+c[1][p])>=c[n-1][p])&&((subProblem+c[1][p])>=(c[1][p]+c[n-1][e-p])))
-                {
-                    c[n][p] = (subProblem+c[1][p]);
-                }
+                int opcion2 = subProblem + c[1][p];
+
+                c[n][p] = Math.max(c[n-1][p],opcion2);
             }
 
             if(p<e)
@@ -158,3 +169,4 @@ public class Problema1Og
      }
     
 }
+
